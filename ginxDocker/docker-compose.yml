@@ -1,0 +1,21 @@
+version: "3.8"
+services:
+ nginx:
+  image: nginx:1.23
+  volumes:
+   - ./nginx/:/usr/share/nginx/html
+   - ./stub.conf:/etc/nginx/conf.d/stub.conf
+  ports:
+   - "8150:80"
+  networks:
+    - nginx
+ nginx_prometheus:
+  image: nginx/nginx-prometheus-exporter:0.10.0
+  networks:
+   - metrics
+   - nginx
+  command: "-nginx.scrape-uri=http://nginx:8080/nginx_status"
+networks:
+  nginx: ~
+  metrics:
+   external: true
